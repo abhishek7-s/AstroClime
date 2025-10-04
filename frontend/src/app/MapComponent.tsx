@@ -1,22 +1,14 @@
 'use client';
 
-import React from 'react';
-import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
-import L, { LatLng } from 'leaflet';
+import React, { useEffect } from 'react';
+import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from 'react-leaflet';
+import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
 // --- TypeScript Type Definitions ---
-interface PositionState {
-  lat: number;
-  lng: number;
-}
-interface MapComponentProps {
-  position: PositionState;
-  setPosition: React.Dispatch<React.SetStateAction<PositionState>>;
-}
-interface LocationPickerProps {
-  setPosition: React.Dispatch<React.SetStateAction<PositionState>>;
-}
+interface PositionState { lat: number; lng: number; }
+interface MapComponentProps { position: PositionState; setPosition: React.Dispatch<React.SetStateAction<PositionState>>; }
+interface LocationPickerProps { setPosition: React.Dispatch<React.SetStateAction<PositionState>>; }
 
 // Fix for Leaflet's default icon issue
 delete L.Icon.Default.prototype._getIconUrl;
@@ -26,22 +18,28 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
 });
 
-// A helper component that listens for map clicks
+// Helper component to handle map clicks
 function LocationPicker({ setPosition }: LocationPickerProps) {
-  const map = useMapEvents({
+  useMapEvents({
     click(e) {
       setPosition(e.latlng);
-      map.flyTo(e.latlng, map.getZoom());
     },
   });
+  return null;
+}
+
+// --- NEW: Helper component to automatically fly the map to a new position ---
+function MapFlyToController({ position }: { position: PositionState }) {
+  const map = useMap();
+  useEffect(() => {
+    map.flyTo(position, map.getZoom());
+  }, [position, map]);
   return null;
 }
 
 // The main Map component
 export default function MapComponent({ position, setPosition }: MapComponentProps) {
   return (
-    // --- THIS IS THE FIX ---
-    // Add the style prop to make the map fill its container.
     <MapContainer center={position as L.LatLngExpression} zoom={13} style={{ height: '100%', width: '100%' }}>
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -49,6 +47,7 @@ export default function MapComponent({ position, setPosition }: MapComponentProp
       />
       <Marker position={position as L.LatLngExpression}></Marker>
       <LocationPicker setPosition={setPosition} />
+      <MapFlyToController position={position} />
     </MapContainer>
   );
 }
