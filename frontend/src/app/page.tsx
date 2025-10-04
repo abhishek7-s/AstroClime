@@ -99,29 +99,40 @@ export default function HomePage() {
 
   const getDayOfYear = (dateString: string): number => { const date = new Date(dateString); const start = new Date(date.getFullYear(), 0, 0); const diff = date.getTime() - start.getTime(); const oneDay = 1000 * 60 * 60 * 24; return Math.floor(diff / oneDay); };
   
-  const handleAnalysis = async (): Promise<void> => { 
-    setIsLoading(true); 
-    setAnalysis(null); 
-    setError(null); 
-    try { 
-      const response = await axios.get('http://localhost:3001/weather-risk', { 
-        params: { 
-          lat: position.lat, 
-          lon: position.lng, 
-          dayOfYear: getDayOfYear(date), 
-          tempThreshold: thresholds.temp, 
-          rainThreshold: thresholds.rain, 
-          windThreshold: thresholds.wind 
-        } 
-      }); 
-      setAnalysis(response.data); 
+  const handleAnalysis = async (): Promise<void> => {
+    setIsLoading(true);
+    setAnalysis(null);
+    setError(null);
+    
+    // Read the backend URL from the environment variable
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
+    if (!apiUrl) {
+      setError("API URL is not configured. Please check your .env.local file.");
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      // Use the variable to construct the full API endpoint
+      const response = await axios.get(`${apiUrl}/weather-risk`, {
+        params: {
+          lat: position.lat,
+          lon: position.lng,
+          dayOfYear: getDayOfYear(date),
+          tempThreshold: thresholds.temp,
+          rainThreshold: thresholds.rain,
+          windThreshold: thresholds.wind
+        }
+      });
+      setAnalysis(response.data);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (e: any) { 
-      setError(e.response?.data?.message || e.message || "Failed to fetch weather analysis."); 
-      console.error(e); 
-    } finally { 
-      setIsLoading(false); 
-    } 
+    } catch (e: any) {
+      setError(e.response?.data?.message || e.message || "Failed to fetch weather analysis.");
+      console.error(e);
+    } finally {
+      setIsLoading(false);
+    }
   };
   
   // --- NEW: Function to handle the city search ---
