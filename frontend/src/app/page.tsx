@@ -29,6 +29,7 @@ function AnalysisCard({ metric, name, unit }: AnalysisCardProps) {
       title: { display: true, text: `Historical Trend`, color: '#9ca3af', font: { size: 14 } }, 
       tooltip: {
         callbacks: {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           label: function(context: any) {
             let label = context.dataset.label || '';
             if (label) {
@@ -114,6 +115,7 @@ export default function HomePage() {
         } 
       }); 
       setAnalysis(response.data); 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) { 
       setError(e.response?.data?.message || e.message || "Failed to fetch weather analysis."); 
       console.error(e); 
@@ -229,18 +231,18 @@ export default function HomePage() {
               /> 
             </div>
 
-            <h2 className="text-3xl font-bold text-cyan-300 mb-6 pb-4 border-b border-gray-700">2. Define "Adverse Conditions"</h2>
+            <h2 className="text-3xl font-bold text-cyan-300 mb-6 pb-4 border-b border-gray-700">2. Define &quot;Adverse Conditions&quot;</h2>
             <div className="space-y-6 flex-grow">
                 <div> 
-                  <label htmlFor="temp" className="block font-medium mb-2 text-gray-300">"Too Hot" if Temperature &gt; <span className="text-cyan-300 font-bold">{thresholds.temp}°C</span></label> 
+                  <label htmlFor="temp" className="block font-medium mb-2 text-gray-300">&quot;Too Hot&quot; if Temperature &gt; <span className="text-cyan-300 font-bold">{thresholds.temp}°C</span></label> 
                   <input type="range" id="temp" name="temp" min="10" max="50" value={thresholds.temp} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setThresholds({...thresholds, temp: Number(e.target.value)})} className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-cyan-500 transition-colors duration-200" /> 
                 </div>
                 <div> 
-                  <label htmlFor="rain" className="block font-medium mb-2 text-gray-300">"Too Wet" if Rain &gt; <span className="text-cyan-300 font-bold">{thresholds.rain} mm/day</span></label> 
+                  <label htmlFor="rain" className="block font-medium mb-2 text-gray-300">&quot;Too Wet&quot; if Rain &gt; <span className="text-cyan-300 font-bold">{thresholds.rain} mm/day</span></label> 
                   <input type="range" id="rain" name="rain" min="0" max="100" step="1" value={thresholds.rain} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setThresholds({...thresholds, rain: Number(e.target.value)})} className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-cyan-500 transition-colors duration-200" /> 
                 </div>
                 <div> 
-                  <label htmlFor="wind" className="block font-medium mb-2 text-gray-300">"Too Windy" if Wind &gt; <span className="text-cyan-300 font-bold">{thresholds.wind} km/h</span></label> 
+                  <label htmlFor="wind" className="block font-medium mb-2 text-gray-300">&quot;Too Windy&quot; if Wind &gt; <span className="text-cyan-300 font-bold">{thresholds.wind} km/h</span></label> 
                   <input type="range" id="wind" name="wind" min="5" max="80" value={thresholds.wind} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setThresholds({...thresholds, wind: Number(e.target.value)})} className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-cyan-500 transition-colors duration-200" /> 
                 </div>
             </div>
@@ -284,8 +286,8 @@ export default function HomePage() {
               )}
               {!isLoading && !analysis && !error && (
                 <div className="text-center text-gray-400 p-6 rounded-lg border border-gray-700 border-dashed animate-fade-in">
-                  <p className="text-2xl font-semibold text-gray-300 mb-3">Your Event's Climate Story Awaits</p>
-                  <p className="text-lg">Click "Analyze Weather Risk" to unveil a detailed historical analysis for your chosen location and date.</p>
+                  <p className="text-2xl font-semibold text-gray-300 mb-3">Your Event&apos;s Climate Story Awaits</p>
+                  <p className="text-lg">Click &quot;Analyze Weather Risk&quot; to unveil a detailed historical analysis for your chosen location and date.</p>
                   <p className="text-sm text-gray-500 mt-2">Powered by NASA&apos;s climate archives.</p>
                 </div>
               )}
